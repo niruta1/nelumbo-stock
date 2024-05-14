@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h3 class="page-title">Request For Items</h3>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'hod_home' %}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Request For Items</li>
+            </ul>
+        </div>
+        <div class="col-auto text-right float-right ml-auto">
+            <button class="btn btn-primary mr-2" data-toggle="modal" data-target=".bd-example-modal-lg" type="button"><i
+                    class="fas fa-history"></i> Item Apply History
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" action="{% url 'item_request_save' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% include 'includes/messages.html' %}
+
+                    <div class="col-sm-11">
+                        <div class="form-group">
+                            <label>Item Name</label>
+                            <input type="text" class="form-control" name="item_name" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-11">
+                        <div class="form-group">
+                            <label>Item Quantity</label>
+                            <input type="number" class="form-control" name="quantity" min="1" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-11">
+                        <div class="form-group">
+                            <label>Request Date</label>
+                            <input type="date" class="form-control" name="date_of_request" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-11">
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select class="form-control" name="department_id" required>
+                                <option>Select Department</option>
+                                {% for i in department %}
+                                <option value="{{i.id}}">{{i.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-11">
+                        <div class="form-group">
+                            <label>Purpose</label>
+                            <select class="form-control" name="purpose_id" required>
+                                <option>Select Purpose</option>
+                                {% for i in purpose %}
+                                <option value="{{i.id}}">{{i.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-11">
+                        <div class="form-group">
+                            <label>Remarks</label>
+                            <textarea class="form-control" style="height:150px" name="remarks"
+                                      required></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Request Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Large modal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Item Request History</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="model-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card card-table">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="table_id" class="table table-hover table-center mb-0">
+                                        <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Item Quantity</th>
+                                            <th>Request Date</th>
+                                            <th>Department</th>
+                                            <th>Purpose</th>
+                                            <th>Remarks</th>
+                                            <th class="text-right">Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for i in item_request_history %}
+                                        <tr>
+                                            <td>{{i.item_name}}</td>
+                                            <td>{{i.quantity}}</td>
+                                            <td>{{i.date_of_request}}</td>
+                                            <td>{{i.department_id}}</td>
+                                            <td>{{i.purpose_id}}</td>
+                                            <td>{{i.remarks}}</td>
+                                            <td class="text-right">
+                                                <div class="actions">
+                                                    {% if i.status == 0 %}
+                                                    <span class="badge badge-info">Request Pending</span>
+                                                    {% elif i.status == 1 %}
+                                                    <span class="badge badge-success">Accepted</span>
+                                                    {% else %}
+                                                    <span class="badge badge-danger">Rejected</span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

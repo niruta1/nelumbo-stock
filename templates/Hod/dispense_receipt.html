@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <h1 class="card-header text-center">ALL STOCK OUT</h1><br>
+    {% for dispense in dispense %}
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Staff : {{ dispense.issued_to | title }}</h2>
+            <h4 class="card-text">Medicine : {{ dispense.medicine}}</h4>
+            <h4 class="card-text">Total Quantity: {{ dispense.dispense_quantity }}</h4>
+
+        </div>
+    </div>
+    <br/>
+    {% endfor %}
+</div>
+{% endblock %}

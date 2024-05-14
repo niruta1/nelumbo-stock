@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="page-title">Welcome Admin!</h3>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-3 col-sm-6 col-12">
+        <a href="{% url 'add_items' %}">
+            <div class="card bg-one w-100">
+                <div class="card-body">
+                    <div class="db-widgets d-flex justify-content-between align-items-center">
+                        <div class="db-icon">
+                            <i class="fas fa-list-alt"></i>
+                        </div>
+                        <div class="db-info">
+                            <h3>{{item_count}}</h3>
+                            <h6>Total Items</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <a href="{% url 'add_staff' %}">
+            <div class="card bg-two w-100">
+                <div class="card-body">
+                    <div class="db-widgets d-flex justify-content-between align-items-center">
+                        <div class="db-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="db-info">
+                            <h3>{{staff_count}}</h3>
+                            <h6>Total Staffs</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>  
+    <div class="col-xl-3 col-sm-6 col-12">
+        <a href="{% url 'add_departments' %}">
+            <div class="card bg-three w-100">
+                <div class="card-body">
+                    <div class="db-widgets d-flex justify-content-between align-items-center">
+                        <div class="db-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="db-info">
+                            <h3>{{department_count}}</h3>
+                            <h6>Departments</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <a href="{% url 'add_medicines' %}">
+            <div class="card bg-four w-100">
+                <div class="card-body">
+                    <div class="db-widgets d-flex justify-content-between align-items-center">
+                        <div class="db-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="db-info">
+                            <h3>{{expired_total}}</h3>
+                            <h6>Expired Drugs</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <a href="{% url 'add_locations' %}">
+            <div class="card bg-five w-100">
+                <div class="card-body">
+                    <div class="db-widgets d-flex justify-content-between align-items-center">
+                        <div class="db-icon">
+                            <i class="fas fa-map-marker"></i>
+                        </div>
+                        <div class="db-info">
+                            <h3>{{location_count}}</h3>
+                            <h6>Locations</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Expiring Medicines</h1>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Bill No.</th>
+                                <th>Medicine Name</th>
+                                <th>Quantity</th>
+                                <th>In Store</th>
+                                <th>Valid To</th>
+                                <th>Days Remaining</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for medicine in expiring_meds %}
+                            <tr>
+                                <td>{{ medicine.bill_no }}</td>
+                                <td>{{ medicine.medicine_name }}</td>
+                                <td>{{ medicine.quantity }}</td>
+                                <td>{{ medicine.location_id.name }}</td>
+                                <td>{{ medicine.valid_to }}</td>
+                                <td>{{ medicine.days_until_expiration }}</td>
+                                <td>
+                                    {% if medicine.days_until_expiration < 0 %}
+                                    <span class="badge badge-danger">Expired</span>
+                                    {% else %}
+                                    <span class="badge badge-warning">Expiring Soon</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Medicine Expiration Reminder</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Bill No.</th>
+                  <th>Medicine Name</th>
+                  <th>Days Remaining</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for medicine in expiring_meds %}
+                <tr>
+                  <td>{{ medicine.bill_no }}</td>
+                  <td>{{ medicine.medicine_name }}</td>
+                  <td>{{ medicine.days_until_expiration }}</td>
+                  <td>
+                    {% if medicine.days_until_expiration < 0 %}
+                    <span class="badge badge-danger">Expired</span>
+                    {% else %}
+                    <span class="badge badge-warning">Expiring Soon</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+  {% if expiring_meds %}
+  <!-- Modal -->
+  <div class="modal fade" id="myModal">
+      <!-- Modal content -->
+  </div>
+
+  <script>
+      $(document).ready(function () {
+          // Show the modal if there are expiring medicines
+          $('#myModal').modal('show');
+      });
+  </script>
+{% endif %}
+
+{% endblock %}
+
+
+
+<!--<div class="row">
+    <div class="col-md-12 col-lg-6">
+        <div class="card card-chart">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h5 class="card-title">Revenue</h5>
+                    </div>
+                    <div class="col-6">
+                        <ul class="list-inline-group text-right mb-0 pl-0">
+                            <li class="list-inline-item">
+                                <div class="form-group mb-0 amount-spent-select">
+                                    <select class="form-control form-control-sm">
+                                        <option>Today</option>
+                                        <option>Last Week</option>
+                                        <option>Last Month</option>
+                                    </select>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="apexcharts-area"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-6">
+        <div class="card card-chart">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h5 class="card-title">Number of Staff</h5>
+                    </div>
+                    <div class="col-6">
+                        <ul class="list-inline-group text-right mb-0 pl-0">
+                            <li class="list-inline-item">
+                                <div class="form-group mb-0 amount-spent-select">
+                                    <select class="form-control form-control-sm">
+                                        <option>Today</option>
+                                        <option>Last Week</option>
+                                        <option>Last Month</option>
+                                    </select>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="bar"></div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!--<div class="row">
+    <div class="col-md-12 d-flex">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <h5 class="card-title">Expiring Medicine</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-center">
+                        <thead class="thead-light">
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Medicine Name</th>
+                            <th>Quantity</th>
+                            <th>Valid From</th>
+                            <th>Valid To</th>
+                            <th>Days Remaining</th>
+                            <th>In Store</th>
+                            <th class="text-right">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {%for med in expiring_medicine%}
+                        <tr>
+                            <td>{{med.id}}</td>
+                            <td>{{med.medicine_name}}</td>
+                            <td>{{med.quantity}}</td>
+                            <td>{{med.valid_from}}</td>
+                            <td>{{med.valid_to}}</td>
+                            <td>{{med.get_remaining_days}}</td>
+                            <td>{{med.location_id.name}}</td>
+                            <td class="text-right">
+                                <div class="actions">
+                                    {% if i.status == 0 %}
+                                    <button class="btn btn-success" disabled="disabled">OK</button>
+                                    {% else %}
+                                    <button class="btn btn-danger" disabled="disabled">Expired</button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>-->
+<!-- <div class="col-md-6 d-flex">
+     <div class="card flex-fill">
+         <div class="card-header">
+             <h5 class="card-title">Student Activity</h5>
+         </div>
+         <div class="card-body">
+             <ul class="activity-feed">
+                 <li class="feed-item">
+                     <div class="feed-date">Apr 13</div>
+                     <span class="feed-text"><a>John Doe</a> won 1st place in <a>"Chess"</a></span>
+                 </li>
+                 <li class="feed-item">
+                     <div class="feed-date">Mar 21</div>
+                     <span class="feed-text"><a>Justin Lee</a> participated in <a
+                             href="invoice.html">"Carrom"</a></span>
+                 </li>
+                 <li class="feed-item">
+                     <div class="feed-date">Feb 2</div>
+                     <span class="feed-text"><a>Justin Lee</a>attended internation conference in <a
+                             href="profile.html">"St.John School"</a></span>
+                 </li>
+                 <li class="feed-item">
+                     <div class="feed-date">Apr 13</div>
+                     <span class="feed-text"><a>John Doe</a> won 1st place in <a>"Chess"</a></span>
+                 </li>
+                 <li class="feed-item">
+                     <div class="feed-date">Mar 21</div>
+                     <span class="feed-text"><a>Justin Lee</a> participated in <a
+                             href="invoice.html">"Carrom"</a></span>
+                 </li>
+             </ul>
+         </div>
+     </div>
+ </div>-->
+<!--</div>-->
+<!--<div class="row">
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card flex-fill fb sm-box">
+            <i class="fab fa-facebook"></i>
+            <h6>50,095</h6>
+            <p>Likes</p>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card flex-fill twitter sm-box">
+            <i class="fab fa-twitter"></i>
+            <h6>48,596</h6>
+            <p>Follows</p>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card flex-fill insta sm-box">
+            <i class="fab fa-instagram"></i>
+            <h6>52,085</h6>
+            <p>Follows</p>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card flex-fill linkedin sm-box">
+            <i class="fab fa-linkedin-in"></i>
+            <h6>69,050</h6>
+            <p>Follows</p>
+        </div>
+    </div>
+</div>-->
+

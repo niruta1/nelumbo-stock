@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Items</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'hod_home' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Items</li>
+                </ul>
+            </div>
+            <div class="col-auto text-right float-right ml-auto">
+                <a href="{% url 'download_csv' %}" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Download</a>
+                <a href="{% url 'add_items' %}" class="btn btn-primary">Add Item <i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+    </div>
+
+    {% include 'includes/messages.html' %}
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-table">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="table_id" class="table table-hover table-center mb-0">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Specification</th>
+                                <th>Item Quantity</th>
+                                <th>Total Amount</th>
+                                <th class="text-right">Action</th>
+                                <th>Detail</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in item %}
+                            <tr>
+                                <td>{{i.id}}</td>
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <a href="student-details.html" class="avatar avatar-sm mr-2"><img
+                                                class="avatar-img rounded-circle"
+                                                src="/{{i.item_pic}}" alt="Item Image"></a>
+                                        <a href="student-details.html">{{i.item_name}}</a>
+                                    </h2>
+                                </td>
+                                <td>{{i.specification}}</td>
+                                <td>{{i.quantity}}</td>
+                                <td>{{i.total_amount}}</td>
+                                <td class="text-right">
+                                    <div class="actions">
+                                        <a href="{% url 'edit_items' i.id %}" class="btn btn-sm bg-success-light mr-2">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <a href="{% url 'delete_items' i.id %}" class="btn btn-sm bg-danger-light">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="d-flex justify-content-center">
+                                    <a href="{%url 'edit_items' i.id %}" class="btn btn-sm btn-success">Edit</a>
+                                    &nbsp;
+                                    <a href="{%url 'delete_items' i.id %}"
+                                       class="btn btn-sm btn-danger">Delete</a> &nbsp;
+                                    <a href="{%url 'item_detail' i.id %}"
+                                       class="btn btn-sm btn-warning">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

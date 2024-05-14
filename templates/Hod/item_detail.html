@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Items</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'hod_home' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Items</li>
+                </ul>
+            </div>
+            <div class="col-auto text-right float-right ml-auto">
+                <a href="{% url 'issue_item' item.id %}" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i> Issue Item</a>
+                <a href="{% url 'add_to_stock' item.id %}" class="btn btn-primary">Add to Stock <i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+    </div>
+
+    {% include 'includes/messages.html' %}
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-table">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="table_id" class="table table-hover table-center mb-0">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Specification</th>
+                                <th>Item Quantity</th>
+                                <th>Total Amount</th>
+                                <th>Category</th>
+                                <th>Date of Purchase</th>
+                                <th>Department</th>
+                                <th>Item Location</th>
+                                <th>Purpose</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td>{{item.id}}</td>
+                                <td>
+                                    <h2 class="table-avatar">
+                                        <a href="student-details.html" class="avatar avatar-sm mr-2"><img
+                                                class="avatar-img rounded-circle"
+                                                src="/{{item.item_pic}}" alt="Item Image"></a>
+                                        <a href="student-details.html">{{item.item_name}}</a>
+                                    </h2>
+                                </td>
+                                <td>{{item.specification}}</td>
+                                <td>{{item.quantity}}</td>
+                                <td>{{item.total_amount}}</td>
+                                <td>{{item.category_id.name}}</td>
+                                <td>{{item.date_of_purchase}}</td>
+                                <td>{{item.department_id.name}}</td>
+                                <td>{{item.location_id.name}}</td>
+                                <td>{{item.purpose_id.name}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
