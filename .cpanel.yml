@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home2/nelumbo0/ims.nelumbonepal.org
+    - export  DEPLOYPATH=/home2/nelumbo0/ims.nelumbonepal.org
     - /bin/rsync -a -v . $DEPLOYPATH
